@@ -1,0 +1,1 @@
+memberSearchIndex = [{"p":"com.kodilla.battleships","c":"BattleShips","l":"BattleShips()","url":"%3Cinit%3E()"},{"p":"com.kodilla.battleships","c":"BattleShips","l":"main(String[])","url":"main(java.lang.String[])"},{"p":"com.kodilla.battleships","c":"BattleShips","l":"start(Stage)","url":"start(javafx.stage.Stage)"}]

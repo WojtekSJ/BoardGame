@@ -1,2 +1,8 @@
-com/kodilla/blackjack/BlackJack.java
- com.kodilla.blackjack.BlackJack
+com/kodilla/battleships/Ships.java
+ com.kodilla.battleships.Ships
+com/kodilla/battleships/Cell.java
+ com.kodilla.battleships.Cell
+com/kodilla/battleships/BattleShips.java
+ com.kodilla.battleships.BattleShips
+ com.kodilla.battleships.BattleShips$1
+ com.kodilla.battleships.BattleShips$2
