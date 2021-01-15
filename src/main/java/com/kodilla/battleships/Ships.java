@@ -1,14 +1,21 @@
 package com.kodilla.battleships;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Ships {
     String name;
     int health;
     Boolean isDestroyed = false;
     HashMap<Integer, Integer> shipLocation = new HashMap<>();
+    public Ships(int platowiec, Set<Integer> locations){
+        this.name = platowiec+"";
+        health = platowiec;
+        for(Integer tempLocation: locations){
+            shipLocation.put(tempLocation, 1);
+        }
+
+    }
+
     public Boolean getDestroyed() {
         return isDestroyed;
     }
@@ -28,5 +35,15 @@ public class Ships {
           isDestroyed = true;
       }
     }
-
+    public boolean checkIfHit(Integer location){
+        for(Map.Entry<Integer, Integer> entry: shipLocation.entrySet()){
+            if(entry.getKey()==location){
+                shipLocation.replace(entry.getKey(), 0);
+                health--;
+                checkStatus();
+                return true;
+            }
+        }
+        return false;
+    }
 }

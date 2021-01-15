@@ -1,8 +1,20 @@
+com/kodilla/battleships/GameButton.java
+ com.kodilla.battleships.GameButton
+com/kodilla/battleships/Deployment.java
+ com.kodilla.battleships.Deployment
 com/kodilla/battleships/Ships.java
  com.kodilla.battleships.Ships
+com/kodilla/battleships/CheckWinCondition.java
+ com.kodilla.battleships.CheckWinCondition
 com/kodilla/battleships/Cell.java
  com.kodilla.battleships.Cell
+com/kodilla/battleships/Fleet.java
+ com.kodilla.battleships.Fleet
+com/kodilla/battleships/VerifyNeighbors.java
+ com.kodilla.battleships.VerifyNeighbors
 com/kodilla/battleships/BattleShips.java
  com.kodilla.battleships.BattleShips
  com.kodilla.battleships.BattleShips$1
  com.kodilla.battleships.BattleShips$2
+ com.kodilla.battleships.BattleShips$3
+ com.kodilla.battleships.BattleShips$4
