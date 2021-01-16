@@ -88,6 +88,9 @@ public class VerifyNeighbors extends Exception{
                     listOfAllowedLocation.add((Integer) (temp + 10));
                 }
             }
+            for(Integer tempToClear: tempShipLocation){
+                listOfAllowedLocation.remove(tempToClear);
+            }
         }
     }
 

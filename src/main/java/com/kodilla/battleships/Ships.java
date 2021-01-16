@@ -35,15 +35,19 @@ public class Ships {
           isDestroyed = true;
       }
     }
-    public boolean checkIfHit(Integer location){
+    public boolean checkIfHit(Integer location, GameButton gameButton){
         for(Map.Entry<Integer, Integer> entry: shipLocation.entrySet()){
             if(entry.getKey()==location){
+                System.out.println("Hit!!");
                 shipLocation.replace(entry.getKey(), 0);
                 health--;
                 checkStatus();
+                gameButton.setStyle("-fx-background-color: #FF0000;");
                 return true;
             }
         }
+        gameButton.setStyle("-fx-background-color: #000000;");
+        System.out.println("Pudlo!!");
         return false;
     }
 }

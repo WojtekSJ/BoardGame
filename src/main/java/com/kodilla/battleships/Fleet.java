@@ -15,7 +15,18 @@ public class Fleet {
         fleetList.add(ship);
     }
 
-    public boolean checkFleetStatus(){
+    public boolean checkIfFleetDestroyed(){
+        int shipsAlive=0;
+        for(Ships temp: fleetList){
+            if(temp.isDestroyed){
+                //Ship destroyed
+            } else {
+                shipsAlive++;
+            }
+        }
+        if(shipsAlive==0){
+            return true;
+        }
         return false;
     }
 }
