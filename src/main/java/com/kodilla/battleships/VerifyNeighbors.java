@@ -15,8 +15,7 @@ public class VerifyNeighbors extends Exception{
                     || alreadyOccupiedCells.contains((Integer)(location+10))
                     || alreadyOccupiedCells.contains((Integer)(location+11))
             ) {
-                System.out.println("Pierwsza petla.");
-                System.out.println(location);
+
                 return true;
             }
         } else if (location == 9 || location == 19 ||location == 29 ||location == 39 ||location == 49 ||location == 59
@@ -28,8 +27,7 @@ public class VerifyNeighbors extends Exception{
                     || alreadyOccupiedCells.contains((Integer)(location+9))
                     || alreadyOccupiedCells.contains((Integer)(location+10))
             ) {
-                System.out.println("Druga petla.");
-                System.out.println(location);
+
                 return true;
             }
         } else {
@@ -43,8 +41,7 @@ public class VerifyNeighbors extends Exception{
                     || alreadyOccupiedCells.contains((Integer)(location+10))
                     || alreadyOccupiedCells.contains((Integer)(location+11))
             ) {
-                System.out.println("Trzecia petla.");
-                System.out.println(location);
+
                 return true;
             }
         }

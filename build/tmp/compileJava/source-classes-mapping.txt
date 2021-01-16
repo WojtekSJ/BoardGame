@@ -1,11 +1,11 @@
 com/kodilla/battleships/GameButton.java
  com.kodilla.battleships.GameButton
-com/kodilla/battleships/Ships.java
- com.kodilla.battleships.Ships
-com/kodilla/battleships/Cell.java
- com.kodilla.battleships.Cell
 com/kodilla/battleships/VerifyNeighbors.java
  com.kodilla.battleships.VerifyNeighbors
+com/kodilla/battleships/Cell.java
+ com.kodilla.battleships.Cell
+com/kodilla/battleships/Ships.java
+ com.kodilla.battleships.Ships
 com/kodilla/battleships/CheckWinCondition.java
  com.kodilla.battleships.CheckWinCondition
 com/kodilla/battleships/BattleShips.java

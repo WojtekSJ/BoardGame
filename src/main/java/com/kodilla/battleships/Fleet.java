@@ -18,12 +18,14 @@ public class Fleet {
     public boolean checkIfFleetDestroyed(){
         int shipsAlive=0;
         for(Ships temp: fleetList){
+          //System.out.println("Statek o platach: "+ temp.name + " jest zniszczony: " + temp.isDestroyed);
             if(temp.isDestroyed){
                 //Ship destroyed
             } else {
                 shipsAlive++;
             }
         }
+        //System.out.println("Ships alive number: " + shipsAlive);
         if(shipsAlive==0){
             return true;
         }

@@ -11,6 +11,7 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -69,6 +70,7 @@ public class BattleShips extends Application implements EventHandler<ActionEvent
 
     private boolean firstCell = true;
     private boolean firstShoot = false;
+    private boolean GameOver = false;
     private Fleet playerFleet = new Fleet("Player fleet");
     private Fleet computerFleet = new Fleet("Computer fleet");
     public List<Integer> listOfShipToDeploy = new ArrayList<>();
@@ -82,6 +84,7 @@ public class BattleShips extends Application implements EventHandler<ActionEvent
     private Button threeCells = new Button();
     private Button twoCells = new Button();
     private Button oneCells = new Button();
+    private TextField comunicator = new TextField();
 
 
 
@@ -324,8 +327,10 @@ public class BattleShips extends Application implements EventHandler<ActionEvent
                 ok.setVisible(true);
                 centrum.setPadding(new Insets(80, 20, 20, 200));
                 centrum.setCenter(shipsToDeploy);
-                System.out.println(playerPotentialShipLocation);
 
+                //deploymentSetup.computerDeployment(listOfComputerShipLocation, computerGridBoard, computerFleet);
+                deploymentSetup.randomComputerDeployment(listOfComputerShipLocation, computerGridBoard, computerFleet, 1,
+                        1, 1, 1, 1);
 
             }
         });
@@ -343,7 +348,13 @@ public class BattleShips extends Application implements EventHandler<ActionEvent
         bottomBoard.setStyle("-fx-background-color: #336699;");
         bottomBoard.setPadding(new Insets(12, 12, 12, 12));
         bottomBoard.setRight(end);
+        comunicator.setPrefSize(200,30);
+        bottomBoard.setLeft(comunicator);
         boards.setBottom(bottomBoard);
+
+
+
+
 
         VBox vbox1 = new VBox();
         vbox1.setPadding(new Insets(15, 120, 100, 12));
@@ -363,7 +374,7 @@ public class BattleShips extends Application implements EventHandler<ActionEvent
         info.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                System.out.println("Akcja Info");
+                //System.out.println("Akcja Info");
                 Label infoLabel = new Label("Rules content \n cos jeszcze");
                 StackPane rulesLayout = new StackPane();
                 //rulesLayout.getChildren().add(infoLabel);
@@ -390,9 +401,7 @@ public class BattleShips extends Application implements EventHandler<ActionEvent
         boards.setCenter(grid);
         Scene scene = new Scene(boards, 1300, 700, Color.BLACK);
 
-        //deploymentSetup.computerDeployment(listOfComputerShipLocation, computerGridBoard, computerFleet);
-        deploymentSetup.randomComputerDeployment(listOfComputerShipLocation, computerGridBoard, computerFleet, 1,
-                1, 1, 1, 1);
+
 
         primaryStage.setTitle("Game of Battle Ships");
         primaryStage.setScene(scene);
@@ -408,10 +417,11 @@ public class BattleShips extends Application implements EventHandler<ActionEvent
 
     @Override
     public void handle(ActionEvent event) {
-    //System.out.println(event.getTarget());
-    GameButton przycisk = (GameButton)event.getTarget();
+        if (!GameOver){
+            //System.out.println(event.getTarget());
+            GameButton przycisk = (GameButton) event.getTarget();
 
-        if(gameStage.equals("Deployment")&&listOfShipToDeploy.size()!=0||(tempShipLocation.size()==0&&listOfShipToDeploy.size()>0)) {
+        if (gameStage.equals("Deployment") && listOfShipToDeploy.size() != 0 || (tempShipLocation.size() == 0 && listOfShipToDeploy.size() > 0)) {
 
             if (!verificator.checkIfAnyNeighbors(przycisk.returnCellNumber(), playerGridBoard, listOfPlayerShipLocation)) {
                 if (tempShipLocation.size() == 0 || verificator.checkIfAllowed(przycisk.returnCellNumber(), listOfAllowedLocation)) {
@@ -425,7 +435,7 @@ public class BattleShips extends Application implements EventHandler<ActionEvent
 
                     if (tempShipLocation.size() == listOfShipToDeploy.get(0)) {
 
-                        Ships ship = new Ships(4, tempShipLocation);
+                        Ships ship = new Ships(4, tempShipLocation, playerGridBoard);
                /* for(Integer temp: tempShipLocation){
                     System.out.println(temp);
                 }*/
@@ -437,27 +447,27 @@ public class BattleShips extends Application implements EventHandler<ActionEvent
                         addToFleet(playerFleet, ship, listOfPlayerShipLocation, tempShipLocation);
                         //System.out.println("Lista localizacji po dodaniu: " + listOfPlayerShipLocation);
                         //System.out.println(playerFleet.fleetList.size());
-                        if(listOfShipToDeploy.size()==5){
+                        if (listOfShipToDeploy.size() == 5) {
                             view5 = new ImageView(fiveD);
                             view5.setFitHeight(60);
                             view5.setPreserveRatio(true);
                             fiveCells.setGraphic(view5);
-                        } else if(listOfShipToDeploy.size()==4){
+                        } else if (listOfShipToDeploy.size() == 4) {
                             view5 = new ImageView(fourD);
                             view5.setFitHeight(60);
                             view5.setPreserveRatio(true);
                             fourCells.setGraphic(view5);
-                        } else if(listOfShipToDeploy.size()==3){
+                        } else if (listOfShipToDeploy.size() == 3) {
                             view5 = new ImageView(threeD);
                             view5.setFitHeight(60);
                             view5.setPreserveRatio(true);
                             threeCells.setGraphic(view5);
-                        } else if(listOfShipToDeploy.size()==2){
+                        } else if (listOfShipToDeploy.size() == 2) {
                             view5 = new ImageView(twoD);
                             view5.setFitHeight(60);
                             view5.setPreserveRatio(true);
                             twoCells.setGraphic(view5);
-                        } else if(listOfShipToDeploy.size()==1){
+                        } else if (listOfShipToDeploy.size() == 1) {
                             view5 = new ImageView(oneD);
                             view5.setFitHeight(60);
                             view5.setPreserveRatio(true);
@@ -468,27 +478,24 @@ public class BattleShips extends Application implements EventHandler<ActionEvent
                         tempShipLocation.clear();
 
 
-
-
-
-                        if(listOfShipToDeploy.size()==0&&gameStage.equals("Deployment")) {
-                            gameStage="Game";
+                        if (listOfShipToDeploy.size() == 0 && gameStage.equals("Deployment")) {
+                            gameStage = "Game";
                             disableButtons(playerGridBoard);
                             resetShipPlacement.setDisable(true);
                             enableButtons(computerGridBoard);
                         }
                     }
                 }
-            }else {
-                System.out.println(listOfPlayerShipLocation);
-                System.out.println(przycisk.returnCellNumber());
-                System.out.println("Jest sasiad tu nie mozesz rozstawic.");
+            } else {
+                //System.out.println(listOfPlayerShipLocation);
+                //System.out.println(przycisk.returnCellNumber());
+                //System.out.println("Jest sasiad tu nie mozesz rozstawic.");
 
             }
         }
 
-        if(gameStage.equals("Game")) {
-            if(firstShoot) {
+        if (gameStage.equals("Game")) {
+            if (firstShoot) {
                 //System.out.println("Gramy :) !!!");
                 boolean kolejnyStrzal = false;
                 boolean againComputerShoot = false;
@@ -497,8 +504,16 @@ public class BattleShips extends Application implements EventHandler<ActionEvent
                 przycisk.setDisable(true);
                 for (Ships temp : computerFleet.fleetList) {
                     if (temp.checkIfHit(przycisk.returnCellNumber(), przycisk)) {
-                        System.out.print("kolejny strzal");
+                       // System.out.print("kolejny strzal");
                         kolejnyStrzal = true;
+                       // System.out.println(computerFleet.checkIfFleetDestroyed());
+                        if (computerFleet.checkIfFleetDestroyed()) {
+                            System.out.println("Gratulacje wygrales");
+                            // Ekran wygranej
+                            GameOver = true;
+                            break;
+
+                        }
                         break;
                     } else {
                         kolejnyStrzal = false;
@@ -530,6 +545,13 @@ public class BattleShips extends Application implements EventHandler<ActionEvent
                         for (Ships temp : playerFleet.fleetList) {
                             if (temp.checkIfHit(randomButton.returnCellNumber(), randomButton)) {
                                 againComputerShoot = true;
+                                if (playerFleet.checkIfFleetDestroyed()) {
+                                    System.out.println("Niestety przegrales");
+                                    // Ekran przegranej
+                                    GameOver = true;
+                                    break;
+                                }
+
                                 break;
                             } else {
                                 againComputerShoot = false;
@@ -542,7 +564,7 @@ public class BattleShips extends Application implements EventHandler<ActionEvent
             }
         }
 
-
+    }
     }
     private void addToFleet(Fleet fleet, Ships ship, Set<Integer> listOfShipLocation, Set<Integer> tempShipLocation){
         fleet.addToFleet(ship);
