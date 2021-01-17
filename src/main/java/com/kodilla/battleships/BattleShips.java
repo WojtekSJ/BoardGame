@@ -64,7 +64,7 @@ public class BattleShips extends Application implements EventHandler<ActionEvent
     private Set<Integer> listOfPlayerShipLocation = new HashSet<>();
     private Set<Integer> listOfComputerShipLocation = new HashSet<>();
     private Set<Integer> tempShipLocation = new HashSet<>();
-    private Set<Integer> playerPotentialShipLocation = new HashSet<>();
+    public Set<Integer> playerPotentialShipLocation = new HashSet<>();
     private List<Integer> playerPotentialShipLocationList = new ArrayList<>();
     public Set<Integer> listOfAllowedLocation = new HashSet<>();
 
@@ -329,8 +329,8 @@ public class BattleShips extends Application implements EventHandler<ActionEvent
                 centrum.setCenter(shipsToDeploy);
 
                 //deploymentSetup.computerDeployment(listOfComputerShipLocation, computerGridBoard, computerFleet);
-                deploymentSetup.randomComputerDeployment(listOfComputerShipLocation, computerGridBoard, computerFleet, 1,
-                        1, 1, 1, 1);
+                deploymentSetup.randomComputerDeployment(listOfComputerShipLocation, computerGridBoard, computerFleet, 0,
+                        0, 1, 1, 1, playerPotentialShipLocation);
 
             }
         });
@@ -528,6 +528,7 @@ public class BattleShips extends Application implements EventHandler<ActionEvent
                     //againComputerShoot = true
                     //else againComputerShoot = false
                     do {
+                        if(GameOver){break;}
                         GameButton randomButton = new GameButton();
                         playerPotentialShipLocationList.clear();
                         for (Integer newList : playerPotentialShipLocation) {
@@ -536,6 +537,7 @@ public class BattleShips extends Application implements EventHandler<ActionEvent
                         Random rn = new Random();
 
                         Integer randomShoot = playerPotentialShipLocationList.get(rn.nextInt(playerPotentialShipLocationList.size()));
+                        System.out.println(randomShoot);
                         playerPotentialShipLocation.remove(randomShoot);
                         try {
                             randomButton = getNodeByRowColumnIndex(verificator.getRowLocation(randomShoot), verificator.getColumnLocation(randomShoot), playerGridBoard);
@@ -554,7 +556,8 @@ public class BattleShips extends Application implements EventHandler<ActionEvent
 
                                 break;
                             } else {
-                                againComputerShoot = false;
+                                if(!GameOver){againComputerShoot = false;}
+
                             }
                         }
                     } while (againComputerShoot);
