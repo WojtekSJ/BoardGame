@@ -4,6 +4,8 @@ com/kodilla/battleships/Cell.java
  com.kodilla.battleships.Cell
 com/kodilla/battleships/VerifyNeighbors.java
  com.kodilla.battleships.VerifyNeighbors
+com/kodilla/battleships/PotentialPlayerShipLocationList.java
+ com.kodilla.battleships.PotentialPlayerShipLocationList
 com/kodilla/battleships/Ships.java
  com.kodilla.battleships.Ships
 com/kodilla/battleships/CheckWinCondition.java

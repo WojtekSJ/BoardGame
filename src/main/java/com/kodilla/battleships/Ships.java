@@ -10,7 +10,7 @@ public class Ships {
     GridPane gridPaneAssigned = new GridPane();
     Boolean isDestroyed = false;
     HashMap<Integer, Integer> shipLocation = new HashMap<>();
-    Set<Integer> playerPotentialShipLocation = new HashSet<>();
+    PotentialPlayerShipLocationList playerPotentialShipLocation;
 
     public Ships(int platowiec, Set<Integer> locations, GridPane gridPaneAssigned){
         this.name = platowiec+"";
@@ -22,7 +22,7 @@ public class Ships {
 
     }
 
-    public Ships(int platowiec, Set<Integer> locations, GridPane gridPaneAssigned, Set<Integer> playerPotentialShipLocation){
+    public Ships(int platowiec, Set<Integer> locations, GridPane gridPaneAssigned, PotentialPlayerShipLocationList playerPotentialShipLocation){
         this.name = platowiec+"";
         health = platowiec;
         this.gridPaneAssigned= gridPaneAssigned;
@@ -70,17 +70,26 @@ public class Ships {
           }
           Set<Integer> listOfNeighborCells = new HashSet<>();
           listOfNeighborCells = verificator.getListOfNeighbors(shipNumbersLocation);
+          //System.out.println("Petla do kolorowania i usuwania pozycji dla sasiadow: " + listOfNeighborCells);
           for(Integer positionToColor: listOfNeighborCells) {
+              //System.out.println(positionToColor);
               try {
                   toChangeButton = verificator.getNodeByRowColumnIndex(verificator.getRowLocation(positionToColor), verificator.getColumnLocation(positionToColor), gridPaneAssigned);
                   toChangeButton.setStyle("-fx-background-color: #000000;");
                   toChangeButton.setDisable(true);
-                  // if computer need to remove button from the list of potential targets
-                  if (playerPotentialShipLocation.size()>0){
-                      playerPotentialShipLocation.removeAll(listOfNeighborCells);
+
+                  //System.out.println("Rozmiar listy potencjalnych celow: " + playerPotentialShipLocation.getPlayerPotentialShipLocation().size());
+                  //System.out.println("Tablica ma pozycje: " + playerPotentialShipLocation.getPlayerPotentialShipLocation());
+                  //System.out.println("Do usuniecia: " + listOfNeighborCells);
+                  if (playerPotentialShipLocation.getPlayerPotentialShipLocation().size()>0){
+                      playerPotentialShipLocation.removeSetFromPosition(listOfNeighborCells);
+                      //System.out.println("Usuwam: ");
+                      //System.out.println("Rozmiar listy po usunieciu: " + playerPotentialShipLocation.getPlayerPotentialShipLocation().size());
+                      //System.out.println("Tablica po usunieciu ma pozycje: " + playerPotentialShipLocation.getPlayerPotentialShipLocation());
                   }
 
               } catch (Exception e) {
+                  //System.out.println(e.getMessage());
                   System.out.println("There is no ship to deploy");
               }
           }

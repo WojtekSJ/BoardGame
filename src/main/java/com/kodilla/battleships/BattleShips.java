@@ -64,16 +64,26 @@ public class BattleShips extends Application implements EventHandler<ActionEvent
     private Set<Integer> listOfPlayerShipLocation = new HashSet<>();
     private Set<Integer> listOfComputerShipLocation = new HashSet<>();
     private Set<Integer> tempShipLocation = new HashSet<>();
-    public Set<Integer> playerPotentialShipLocation = new HashSet<>();
+    //public Set<Integer> playerPotentialShipLocation = new HashSet<>();
     private List<Integer> playerPotentialShipLocationList = new ArrayList<>();
     public Set<Integer> listOfAllowedLocation = new HashSet<>();
-
+    private String difficultyMode = "Normal"; // "Easy" , "Normal", "Hard"
     private boolean firstCell = true;
     private boolean firstShoot = false;
     private boolean GameOver = false;
+    private boolean wasHit = false;
     private Fleet playerFleet = new Fleet("Player fleet");
     private Fleet computerFleet = new Fleet("Computer fleet");
     public List<Integer> listOfShipToDeploy = new ArrayList<>();
+    private GameButton randomButton = new GameButton();
+    public PotentialPlayerShipLocationList playerPotentialShipLocationClass = new PotentialPlayerShipLocationList();
+    private Integer randomShoot;
+    private List<Integer> listOfTargets = new ArrayList<>();
+
+    private Set<Integer> targetLockedlist = new HashSet<>();
+    private Set<Integer> hitCellsList = new HashSet<>();
+    private int shipsBeforeShot;
+    private int shipsAfterShot;
 
     private VerifyNeighbors verificator = new VerifyNeighbors();
     private GridPane playerGridBoard = new GridPane();
@@ -131,7 +141,7 @@ public class BattleShips extends Application implements EventHandler<ActionEvent
                 //Button button = createNumberButton(i, j);
 
                 playerGridBoard.add(createNumberButton(i, j), i, j, 1, 1);
-                playerPotentialShipLocation.add(i*10+j);
+                playerPotentialShipLocationClass.addPlayerPotentialShipLocation(i*10+j);
                  //playerGridBoard.add(new Button(i + "," +j), i, j, 1, 1);
             }
         }
@@ -329,8 +339,17 @@ public class BattleShips extends Application implements EventHandler<ActionEvent
                 centrum.setCenter(shipsToDeploy);
 
                 //deploymentSetup.computerDeployment(listOfComputerShipLocation, computerGridBoard, computerFleet);
-                deploymentSetup.randomComputerDeployment(listOfComputerShipLocation, computerGridBoard, computerFleet, 0,
-                        0, 1, 1, 1, playerPotentialShipLocation);
+                if(difficultyMode.equals("Easy")) {
+                    deploymentSetup.randomComputerDeployment(listOfComputerShipLocation, computerGridBoard, computerFleet, 1,
+                            1, 1, 1, 0);
+                } else if(difficultyMode.equals("Hard")) {
+                    deploymentSetup.randomComputerDeployment(listOfComputerShipLocation, computerGridBoard, computerFleet, 1,
+                            0, 1, 1, 2);
+                } else {
+                    deploymentSetup.randomComputerDeployment(listOfComputerShipLocation, computerGridBoard, computerFleet, 1,
+                            1, 1, 1, 1);
+
+                }
 
             }
         });
@@ -435,7 +454,7 @@ public class BattleShips extends Application implements EventHandler<ActionEvent
 
                     if (tempShipLocation.size() == listOfShipToDeploy.get(0)) {
 
-                        Ships ship = new Ships(4, tempShipLocation, playerGridBoard);
+                        Ships ship = new Ships(4, tempShipLocation, playerGridBoard, playerPotentialShipLocationClass);
                /* for(Integer temp: tempShipLocation){
                     System.out.println(temp);
                 }*/
@@ -529,37 +548,82 @@ public class BattleShips extends Application implements EventHandler<ActionEvent
                     //else againComputerShoot = false
                     do {
                         if(GameOver){break;}
-                        GameButton randomButton = new GameButton();
+
                         playerPotentialShipLocationList.clear();
-                        for (Integer newList : playerPotentialShipLocation) {
+                        for (Integer newList : playerPotentialShipLocationClass.getPlayerPotentialShipLocation()) {
                             playerPotentialShipLocationList.add(newList);
                         }
                         Random rn = new Random();
+                        System.out.println("Target locket list size: " + targetLockedlist);
+                        if(targetLockedlist.isEmpty()) {
+                            //calkowicie losowy strzal
+                            randomShoot = playerPotentialShipLocationList.get(rn.nextInt(playerPotentialShipLocationList.size()));
+                            System.out.println("Strzal losowy: " + randomButton);
+                        } else {
 
-                        Integer randomShoot = playerPotentialShipLocationList.get(rn.nextInt(playerPotentialShipLocationList.size()));
-                        System.out.println(randomShoot);
-                        playerPotentialShipLocation.remove(randomShoot);
+                            listOfTargets.clear();
+                            for(Integer copyInt: targetLockedlist){
+                                listOfTargets.add(copyInt);
+                            }
+                            randomShoot = listOfTargets.get(rn.nextInt(listOfTargets.size()));
+                            System.out.println("Strzal z nacelownania: " + randomButton);
+                            targetLockedlist.remove(randomShoot);
+                        }
+                        //System.out.println(randomShoot);
+                        //System.out.println(playerPotentialShipLocationClass.getPlayerPotentialShipLocation());
+                        playerPotentialShipLocationClass.remove(randomShoot);
                         try {
                             randomButton = getNodeByRowColumnIndex(verificator.getRowLocation(randomShoot), verificator.getColumnLocation(randomShoot), playerGridBoard);
                         } catch (Exception e) {
                             System.out.println("There is no ship to shoot at");
                         }
+                        shipsBeforeShot = playerFleet.fleetList.size();
+                        //System.out.println("Ships Before shoot: " + shipsBeforeShot);
                         for (Ships temp : playerFleet.fleetList) {
+
                             if (temp.checkIfHit(randomButton.returnCellNumber(), randomButton)) {
                                 againComputerShoot = true;
+                                wasHit = true;
                                 if (playerFleet.checkIfFleetDestroyed()) {
                                     System.out.println("Niestety przegrales");
                                     // Ekran przegranej
                                     GameOver = true;
+
                                     break;
                                 }
 
                                 break;
                             } else {
-                                if(!GameOver){againComputerShoot = false;}
-
+                                if (!GameOver) {
+                                    againComputerShoot = false;
+                                }
+                                wasHit = false;
                             }
                         }
+                            shipsAfterShot = playerFleet.fleetList.size();
+                            //System.out.println("Ships after shoot: " + shipsAfterShot);
+                            if (!(shipsBeforeShot == shipsAfterShot)) {
+                                //trafiony zatopiony
+                                System.out.println("Trafiony Zatopiony.");
+                                hitCellsList.clear();
+                                targetLockedlist.clear();
+
+                            } else if(wasHit){
+                                System.out.println("Trafienie");
+                                wasHit = false;
+                                hitCellsList.add(randomShoot);
+                                verificator.createAllowedCellList(hitCellsList, targetLockedlist); //tworzenie potencjalnych pozycji
+                                //Sprawdzenie czy pozycje sa w dozwolonych pozycjach do strzalu
+                                Set<Integer> tempToRemove = new HashSet<>();
+                                for(Integer tempToValidate: targetLockedlist) {
+                                    if(!(playerPotentialShipLocationClass.getPlayerPotentialShipLocation().contains(tempToValidate))){
+                                        tempToRemove.add(tempToValidate);
+                                    }
+                                }
+                                targetLockedlist.removeAll(tempToRemove);
+                                System.out.println("Trafiony nie zatopiony. Lista pot celow: " +targetLockedlist);
+                            }
+
                     } while (againComputerShoot);
                 }
             } else {

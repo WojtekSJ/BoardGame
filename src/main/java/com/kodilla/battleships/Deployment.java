@@ -40,7 +40,7 @@ public class Deployment {
     }
     public void randomComputerDeployment(Set<Integer> listOfComputerShipLocation, GridPane computerGridBoard,
                                          Fleet computerFleet, int fiveCells, int fourCells, int threeCells,
-                                         int twoCells, int oneCells, Set<Integer> playerPotentialShipLocation) {
+                                         int twoCells, int oneCells) {
         List<Integer> numberOfShips = new ArrayList<>();
         Integer nextCell = -1;
 
@@ -101,7 +101,7 @@ public class Deployment {
 
                 if (computerTempShipLocation.size() == numberOfShips.get(i)){
                     listOfComputerShipLocation.addAll(computerTempShipLocation);
-                    computerFleet.addToFleet(new Ships(numberOfShips.get(i), computerTempShipLocation, computerGridBoard, playerPotentialShipLocation));
+                    computerFleet.addToFleet(new Ships(numberOfShips.get(i), computerTempShipLocation, computerGridBoard));
                     shipOnBoard = true;
                     shipPossibleToLocate = true;
                     computerPotentialShipLocation.removeAll(computerTempShipLocation);
@@ -137,7 +137,7 @@ public class Deployment {
                         computerTempShipLocation.add(nextCell);
                         if (computerTempShipLocation.size() == numberOfShips.get(i)) {
                             listOfComputerShipLocation.addAll(computerTempShipLocation);
-                            computerFleet.addToFleet(new Ships(numberOfShips.get(i), computerTempShipLocation, computerGridBoard, playerPotentialShipLocation));
+                            computerFleet.addToFleet(new Ships(numberOfShips.get(i), computerTempShipLocation, computerGridBoard));
 
                             for(Integer positionToColor: computerTempShipLocation) {
                                 try {
