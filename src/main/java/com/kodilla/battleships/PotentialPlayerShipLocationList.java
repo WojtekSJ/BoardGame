@@ -1,10 +1,11 @@
 package com.kodilla.battleships;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class PotentialPlayerShipLocationList {
+public class PotentialPlayerShipLocationList implements Serializable {
     private Set<Integer> playerPotentialShipLocation = new HashSet<>();
 
     public void addPlayerPotentialShipLocation(Integer position) {

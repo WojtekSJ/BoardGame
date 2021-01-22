@@ -18,6 +18,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
+
+import java.io.*;
 import java.util.*;
 
 public class BattleShips extends Application implements EventHandler<ActionEvent> {
@@ -55,7 +57,7 @@ public class BattleShips extends Application implements EventHandler<ActionEvent
 
     private String gameStage;  //Stages "Start", "Deployment", "Game"
     private final Button ok = new Button();
-    private final Set<Integer> listOfPlayerShipLocation = new HashSet<>();
+    private Set<Integer> listOfPlayerShipLocation = new HashSet<>();
     private Set<Integer> listOfComputerShipLocation = new HashSet<>();
     private Set<Integer> tempShipLocation = new HashSet<>();
     //public Set<Integer> playerPotentialShipLocation = new HashSet<>();
@@ -301,7 +303,7 @@ public class BattleShips extends Application implements EventHandler<ActionEvent
 
                 tempShipLocation.clear();
                 listOfAllowedLocation.clear();
-                //playerWonShow();
+               
             }
         });
 
@@ -439,13 +441,51 @@ public class BattleShips extends Application implements EventHandler<ActionEvent
         topBoard.setLeft(topLeftPane);
         boards.setTop(topBoard);
 
+
+
+
+
         BorderPane bottomBoard = new BorderPane();
         bottomBoard.setStyle("-fx-background-color: #336699;");
         bottomBoard.setPadding(new Insets(12, 12, 12, 12));
         bottomBoard.setRight(end);
+//////////////////////////////
+        Button reset = new Button("Reset");
+        Button Load = new Button("Load");
+        Button print = new Button("Print");
+        reset.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                reset();
+            }
+        });
+        Load.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                loadClass();
+            }
+        });
+        print.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                System.out.println("Flota gracza" + playerFleet);
+                for(Ships temp: playerFleet.fleetList){
+                    System.out.println("Jego statki to: " + temp);
+                    System.out.println("Lokalizacje to: " + temp.shipLocation);
+                }
+            }
+        });
+        FlowPane loadReset = new FlowPane();
+        loadReset.getChildren().add(reset);
+        loadReset.getChildren().add(Load);
+        loadReset.getChildren().add(print);
+        bottomBoard.setLeft(loadReset);
+
+  ////////////////////////////////
         //comunicator.setPrefSize(200,30);
         //bottomBoard.setLeft(comunicator);
         boards.setBottom(bottomBoard);
+
 
 
         VBox vbox1 = new VBox();
@@ -476,6 +516,7 @@ public class BattleShips extends Application implements EventHandler<ActionEvent
                 ruleStage.setTitle("Rules for game");
                 ruleStage.setScene(ruleScene);
                 ruleStage.show();
+                saveClass();
 
             }
         });
@@ -759,6 +800,99 @@ public class BattleShips extends Application implements EventHandler<ActionEvent
         ruleStage.setScene(ruleScene);
         ruleStage.show();
     }
+
+    public void saveClass(){
+
+        try {
+            FileOutputStream f = new FileOutputStream(new File("C:\\Users\\oem\\IdeaProjects\\BoardGameKodilla\\src\\main\\resources\\ships\\myObjects.txt"));
+            ObjectOutputStream o = new ObjectOutputStream(f);
+
+            // Write objects to file
+            o.writeObject(playerFleet);
+            o.close();
+            f.close();
+
+            /*FileInputStream fi = new FileInputStream(new File("myObjects.txt"));
+            ObjectInputStream oi = new ObjectInputStream(fi);
+
+            // Read objects
+            Person pr1 = (Person) oi.readObject();
+            Person pr2 = (Person) oi.readObject();
+
+            System.out.println(pr1.toString());
+            System.out.println(pr2.toString());
+
+            oi.close();
+            fi.close();*/
+
+        } catch (FileNotFoundException e) {
+            System.out.println("" + e.getStackTrace());
+            System.out.println(""+ e.getMessage());
+            System.out.println("File not found");
+        } catch (IOException e) {
+            System.out.println("Error initializing stream");
+            System.out.println(""+ e.getMessage());
+        }
+
+
+
+
+
+
+        /*try {
+            System.out.println("Proba zapisu");
+            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("song.txt"));
+            out.writeObject(playerFleet);
+            out.flush();
+            out.close();
+            System.out.println("Koniec zapisu");
+        }catch (IOException e){
+            System.out.println(e.getMessage());
+
+        }*/
+    }
+
+    public void loadClass(){
+
+        try {
+            FileInputStream fi = new FileInputStream(new File("C:\\Users\\oem\\IdeaProjects\\BoardGameKodilla\\src\\main\\resources\\ships\\myObjects.txt"));
+            ObjectInputStream oi = new ObjectInputStream(fi);
+
+
+
+            // Read objects
+            System.out.println("Zczytywanie playerFleet");
+                playerFleet = (Fleet)oi.readObject();
+            System.out.println(playerFleet.fleetList);
+
+
+
+
+            oi.close();
+            fi.close();
+
+        } catch (FileNotFoundException e) {
+            System.out.println("" + e.getStackTrace());
+            System.out.println(""+ e.getMessage());
+            System.out.println("File not found");
+        } catch (IOException e) {
+            System.out.println("Error initializing stream");
+            System.out.println(""+ e.getMessage());
+        }catch (ClassNotFoundException e) {
+            System.out.println("Error initializing stream");
+            System.out.println(""+ e.getMessage());
+        }
+
+
+    }
+    public void reset(){
+        System.out.println(playerFleet);
+        playerFleet.fleetList.clear();
+        for(Ships temp: playerFleet.fleetList){
+
+        }
+    }
+
 }
 
 

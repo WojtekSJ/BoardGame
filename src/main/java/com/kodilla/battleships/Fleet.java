@@ -1,14 +1,28 @@
 package com.kodilla.battleships;
 
+
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class Fleet {
+public class Fleet implements Serializable {
+    /*private void writeObject(ObjectOutputStream oos) throws IOException {
+        oos.writeObject(name);
+
+    }*/
+
+
     String name;
     List<Ships> fleetList = new ArrayList<>();
 
     public Fleet(String name) {
         this.name = name;
+    }
+    public Fleet() {
+
     }
 
     public void addToFleet(Ships ship) {
@@ -27,8 +41,8 @@ public class Fleet {
                 shipsAlive++;
             }
         }
-        fleetList.removeAll(shipToRemove);
-        //System.out.println("Ships alive number: " + shipsAlive);
+        //fleetList.removeAll(shipToRemove);
+
         if(shipsAlive==0){
             return true;
         }

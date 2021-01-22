@@ -2,9 +2,37 @@ package com.kodilla.battleships;
 
 import javafx.scene.layout.GridPane;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.*;
 
-public class Ships {
+public class Ships implements Serializable {
+    private void writeObject(ObjectOutputStream oos) throws IOException {
+        oos.writeObject(name);
+        oos.writeObject(health);
+        oos.writeObject(isDestroyed);
+        oos.writeObject(shipLocation);
+        oos.writeObject(playerPotentialShipLocation);
+    }
+    private void readObject(ObjectInputStream oos) throws IOException {
+        //Class<?> declaringClass = (Class<?>)in.readObject();
+        System.out.println("Odczytywanie ships");
+        try
+        {
+            this.name = (String)oos.readObject();
+            this.health = (int)oos.readObject();
+            this.isDestroyed = (Boolean) oos.readObject();
+            this.shipLocation = (HashMap<Integer, Integer>) oos.readObject();
+            this.playerPotentialShipLocation = (PotentialPlayerShipLocationList) oos.readObject();
+
+        }
+        catch (Exception e)
+        {
+            throw new IOException(String.format("Error occurred resolving deserialized method '%s.%s'"));
+        }
+    }
     String name;
     int health;
     GridPane gridPaneAssigned = new GridPane();
