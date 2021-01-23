@@ -57,19 +57,19 @@ public class BattleShips extends Application implements EventHandler<ActionEvent
 
     private String gameStage;  //Stages "Start", "Deployment", "Game"
     private final Button ok = new Button();
-    private Set<Integer> listOfPlayerShipLocation = new HashSet<>();
-    private Set<Integer> listOfComputerShipLocation = new HashSet<>();
+    public Set<Integer> listOfPlayerShipLocation = new HashSet<>();
+    public Set<Integer> listOfComputerShipLocation = new HashSet<>();
     private Set<Integer> tempShipLocation = new HashSet<>();
     //public Set<Integer> playerPotentialShipLocation = new HashSet<>();
-    private List<Integer> playerPotentialShipLocationList = new ArrayList<>();
+    public List<Integer> playerPotentialShipLocationList = new ArrayList<>();
     public Set<Integer> listOfAllowedLocation = new HashSet<>();
     private String difficultyMode = "Normal"; // "Easy" , "Normal", "Hard"
-    private boolean firstCell = true;
+    public boolean firstCell = true;
     private boolean firstShoot = false;
     private boolean GameOver = false;
     private boolean wasHit = false;
-    private Fleet playerFleet = new Fleet("Player fleet");
-    private Fleet computerFleet = new Fleet("Computer fleet");
+    public Fleet playerFleet = new Fleet("Player fleet");
+    public Fleet computerFleet = new Fleet("Computer fleet");
     public List<Integer> listOfShipToDeploy = new ArrayList<>();
     private GameButton randomButton = new GameButton();
     public PotentialPlayerShipLocationList playerPotentialShipLocationClass = new PotentialPlayerShipLocationList();
@@ -80,10 +80,24 @@ public class BattleShips extends Application implements EventHandler<ActionEvent
     private Set<Integer> hitCellsList = new HashSet<>();
     private int shipsBeforeShot;
     private int shipsAfterShot;
+    private Set<Integer> tempToRemove = new HashSet<>();
+
+    /////////////////To SAVE/////////
+    HashSet<Integer> computerGridHit = new HashSet<>();
+    HashSet<Integer> computerGridMiss = new HashSet<>();
+    HashSet<Integer> computerGridSink = new HashSet<>();
+    HashSet<Integer> playerGridHit = new HashSet<>();
+    HashSet<Integer> playerGridMiss = new HashSet<>();
+    HashSet<Integer> playerGridSink = new HashSet<>();
+    GameState saveGame = new GameState();
+    ///////////////////////////
 
     private VerifyNeighbors verificator = new VerifyNeighbors();
     private GridPane playerGridBoard = new GridPane();
     private GridPane computerGridBoard = new GridPane();
+    GridPane playerGridBoardAndLabel = new GridPane();
+    GridPane computerGridBoardAndLabel = new GridPane();
+    GridPane shipsToDeploy = new GridPane();
     private ImageView view5 = new ImageView();
     private Button fiveCells = new Button();
     private Button fourCells = new Button();
@@ -133,16 +147,7 @@ public class BattleShips extends Application implements EventHandler<ActionEvent
         playerGridBoard.setPadding(new Insets(10, 20, 10, 20));
         playerGridBoard.setAlignment(Pos.CENTER);
         //Button[] button = new Button[100];
-        for (int i = 0; i<10; i++) {
-            for (int j = 0; j < 10; j++) {
 
-                //Button button = createNumberButton(i, j);
-
-                playerGridBoard.add(createNumberButton(i, j), i, j, 1, 1);
-                playerPotentialShipLocationClass.addPlayerPotentialShipLocation(i*10+j);
-                 //playerGridBoard.add(new Button(i + "," +j), i, j, 1, 1);
-            }
-        }
 
 
         computerGridBoard.setHgap(5);
@@ -194,7 +199,7 @@ public class BattleShips extends Application implements EventHandler<ActionEvent
         ok.setGraphic(view);
         BorderPane centrum = new BorderPane();
         ok.setVisible(false);
-        GridPane shipsToDeploy = new GridPane();
+
 
 
 
@@ -387,33 +392,48 @@ public class BattleShips extends Application implements EventHandler<ActionEvent
         /*topBoard.getChildren().add(easyMode);
         topBoard.getChildren().add(normalMode);
         topBoard.getChildren().add(hardMode);*/
+        playerBoardLabel.setFont(font);
+        HBox hbox = new HBox(80);
+        hbox.setPrefHeight(200);
+        playerGridBoardAndLabel.add(playerBoardLabel,0,0,1,1);
+        playerGridBoardAndLabel.add(hbox,0,1,10,10);
+        playerGridBoardAndLabel.add(playerGridBoard,0,2,1,1);
+        grid.setLeft(playerGridBoardAndLabel);
+        //grid.setLeft(playerBoardLabel);
+        //grid.setLeft(playerGridBoard);
+
+        computerBoardLabel.setFont(font);
+        computerGridBoardAndLabel.add(computerBoardLabel,0,0,1,1);
+        computerGridBoardAndLabel.add(computerGridBoard,0,1,1,1);
+        grid.setRight(computerGridBoardAndLabel);
+
+        playerGridBoardAndLabel.setVisible(false);
+        computerGridBoardAndLabel.setVisible(false);
+
+        for (int i = 0; i<10; i++) {
+            for (int j = 0; j < 10; j++) {
+
+                //Button button = createNumberButton(i, j);
+
+                playerGridBoard.add(createNumberButton(i, j), i, j, 1, 1);
+                //playerGridBoard.add(new Button(i + "," +j), i, j, 1, 1);
+            }
+        }
+        createListToShoot();
 
         startB.setOnAction(new EventHandler<ActionEvent>() {
 
             @Override
             public void handle(ActionEvent event) {
-                easyMode.setDisable(false);
-                normalMode.setDisable(false);
-                highMode.setDisable(false);
-
-                GridPane playerGridBoardAndLabel = new GridPane();
-                playerBoardLabel.setFont(font);
-                HBox hbox = new HBox(80);
-                hbox.setPrefHeight(200);
-                playerGridBoardAndLabel.add(playerBoardLabel,0,0,1,1);
-                playerGridBoardAndLabel.add(hbox,0,1,10,10);
-                playerGridBoardAndLabel.add(playerGridBoard,0,2,1,1);
-                grid.setLeft(playerGridBoardAndLabel);
-                //grid.setLeft(playerBoardLabel);
-                //grid.setLeft(playerGridBoard);
+                easyMode.setDisable(true);
+                normalMode.setDisable(true);
+                highMode.setDisable(true);
 
 
 
-                GridPane computerGridBoardAndLabel = new GridPane();
-                computerBoardLabel.setFont(font);
-                computerGridBoardAndLabel.add(computerBoardLabel,0,0,1,1);
-                computerGridBoardAndLabel.add(computerGridBoard,0,1,1,1);
-                grid.setRight(computerGridBoardAndLabel);
+
+                playerGridBoardAndLabel.setVisible(true);
+                computerGridBoardAndLabel.setVisible(true);
                 //grid.setRight(computerGridBoard);
 
                 resetShipPlacement.setVisible(true);
@@ -434,7 +454,7 @@ public class BattleShips extends Application implements EventHandler<ActionEvent
                             1, 1, 1, 1);
 
                 }
-
+                System.out.println(computerFleet.fleetList);
             }
         });
 
@@ -633,7 +653,7 @@ public class BattleShips extends Application implements EventHandler<ActionEvent
                     //else againComputerShoot = false
                     do {
                         if(GameOver){break;}
-
+                        //System.out.println(playerPotentialShipLocationClass.getPlayerPotentialShipLocation());
                         playerPotentialShipLocationList.clear();
                         for (Integer newList : playerPotentialShipLocationClass.getPlayerPotentialShipLocation()) {
                             playerPotentialShipLocationList.add(newList);
@@ -701,7 +721,7 @@ public class BattleShips extends Application implements EventHandler<ActionEvent
                                 hitCellsList.add(randomShoot);
                                 verificator.createAllowedCellList(hitCellsList, targetLockedlist); //tworzenie potencjalnych pozycji
                                 //Sprawdzenie czy pozycje sa w dozwolonych pozycjach do strzalu
-                                Set<Integer> tempToRemove = new HashSet<>();
+
                                 for(Integer tempToValidate: targetLockedlist) {
                                     if(!(playerPotentialShipLocationClass.getPlayerPotentialShipLocation().contains(tempToValidate))){
                                         tempToRemove.add(tempToValidate);
@@ -802,13 +822,14 @@ public class BattleShips extends Application implements EventHandler<ActionEvent
     }
 
     public void saveClass(){
+        saveGame.GameStateSave(computerFleet, playerFleet, computerGridMiss, computerGridHit, computerGridSink, playerGridMiss,  playerGridHit, playerGridSink, gameStage, listOfPlayerShipLocation, listOfComputerShipLocation, firstShoot, playerPotentialShipLocationClass, targetLockedlist, hitCellsList, shipsBeforeShot, shipsAfterShot);
 
         try {
             FileOutputStream f = new FileOutputStream(new File("C:\\Users\\oem\\IdeaProjects\\BoardGameKodilla\\src\\main\\resources\\ships\\myObjects.txt"));
             ObjectOutputStream o = new ObjectOutputStream(f);
 
             // Write objects to file
-            o.writeObject(playerFleet);
+            o.writeObject(saveGame);
             o.close();
             f.close();
 
@@ -862,8 +883,13 @@ public class BattleShips extends Application implements EventHandler<ActionEvent
 
             // Read objects
             System.out.println("Zczytywanie playerFleet");
-                playerFleet = (Fleet)oi.readObject();
+            saveGame = (GameState)oi.readObject();
             System.out.println(playerFleet.fleetList);
+
+            System.out.println("Flota gracza to: " + saveGame.playerFleet);
+                for(Ships temp: saveGame.playerFleet.fleetList) {
+                    System.out.println("Statki w klasie Game state: " + temp.shipLocation);
+                }
 
 
 
@@ -883,16 +909,113 @@ public class BattleShips extends Application implements EventHandler<ActionEvent
             System.out.println(""+ e.getMessage());
         }
 
+        playerFleet = saveGame.playerFleet;
 
+        for(Ships temp: playerFleet.fleetList) {
+            System.out.println("Statki w glownej klasie player: " + temp.shipLocation);
+        }
+
+        /*for(Ships temp: saveGame.playerFleet.fleetList) {
+            temp.setGridPaneAssigned(playerGridBoard);
+        }
+        for(Ships temp: saveGame.computerFleet.fleetList) {
+            temp.setGridPaneAssigned(computerGridBoard);
+        }*/
     }
     public void reset(){
-        System.out.println(playerFleet);
+        //System.out.println(playerFleet);
         playerFleet.fleetList.clear();
+        computerFleet.fleetList.clear();
+        easyMode.setDisable(false);
+        normalMode.setDisable(false);
+        highMode.setDisable(false);
+        resetShipPlacement.setVisible(false);
+        startB.setDisable(true);
+        view5 = new ImageView(five);
+        view5.setFitHeight(60);
+        view5.setPreserveRatio(true);
+        fiveCells.setStyle("-fx-background-color: #336699;");
+        fiveCells.setGraphic(view5);
+
+        view5 = new ImageView(four);
+        view5.setFitHeight(60);
+        view5.setPreserveRatio(true);
+        fourCells.setStyle("-fx-background-color: #336699;");
+        fourCells.setGraphic(view5);
+
+        view5 = new ImageView(three);
+        view5.setFitHeight(60);
+        view5.setPreserveRatio(true);
+        threeCells.setStyle("-fx-background-color: #336699;");
+        threeCells.setGraphic(view5);
+
+        view5 = new ImageView(two);
+        view5.setFitHeight(60);
+        view5.setPreserveRatio(true);
+        twoCells.setStyle("-fx-background-color: #336699;");
+        twoCells.setGraphic(view5);
+
+
+
+        view5 = new ImageView(one);
+        view5.setFitHeight(60);
+        view5.setPreserveRatio(true);
+        oneCells.setStyle("-fx-background-color: #336699;");
+        oneCells.setGraphic(view5);
+
+
+
+        for (int i=0; i<10; i++) {
+            for(int j = 0; j<10;j++) {
+                verificator.getNodeByRowColumnIndex(i, j, playerGridBoard).setStyle("-fx-background-color: #D3D3D3;");
+            }
+        }
+        for (int i=0; i<10; i++) {
+            for(int j = 0; j<10;j++) {
+                verificator.getNodeByRowColumnIndex(i, j, computerGridBoard).setStyle("-fx-background-color: #D3D3D3;");
+            }
+        }
+
+
+        disableButtons(computerGridBoard);
+        enableButtons(playerGridBoard);
+        gameStage = "Deployment";
+        Deployment deploymentSetup = new Deployment();
+        deploymentSetup.createListOfShipTODeploy(listOfShipToDeploy);
+        listOfPlayerShipLocation.clear();
+        listOfComputerShipLocation.clear();
+        tempShipLocation.clear();
+        GameOver = false;
+        resetShipPlacement.setVisible(false);
+        playerGridBoardAndLabel.setVisible(false);
+        computerGridBoardAndLabel.setVisible(false);
+        firstShoot = false;
+        listOfAllowedLocation.clear();
+        hitCellsList.clear();
+        targetLockedlist.clear();
+        playerPotentialShipLocationClass.clear();
+        tempToRemove.clear();
+        wasHit = false;
+
+
+        createListToShoot();
+
+        System.out.println(listOfShipToDeploy.size());
+
         for(Ships temp: playerFleet.fleetList){
 
         }
     }
+public void createListToShoot(){
+    for (int i = 0; i<10; i++) {
+        for (int j = 0; j < 10; j++) {
 
+
+            playerPotentialShipLocationClass.addPlayerPotentialShipLocation(i*10+j);
+
+        }
+    }
+}
 }
 
 

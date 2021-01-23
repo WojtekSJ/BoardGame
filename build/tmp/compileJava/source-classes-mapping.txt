@@ -2,12 +2,12 @@ com/kodilla/battleships/VerifyNeighbors.java
  com.kodilla.battleships.VerifyNeighbors
 com/kodilla/battleships/GameButton.java
  com.kodilla.battleships.GameButton
-com/kodilla/battleships/PotentialPlayerShipLocationList.java
- com.kodilla.battleships.PotentialPlayerShipLocationList
 com/kodilla/battleships/GameState.java
  com.kodilla.battleships.GameState
 com/kodilla/battleships/Ships.java
  com.kodilla.battleships.Ships
+com/kodilla/battleships/PotentialPlayerShipLocationList.java
+ com.kodilla.battleships.PotentialPlayerShipLocationList
 com/kodilla/battleships/Deployment.java
  com.kodilla.battleships.Deployment
 com/kodilla/battleships/Fleet.java

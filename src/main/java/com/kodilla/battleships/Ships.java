@@ -35,6 +35,11 @@ public class Ships implements Serializable {
     }
     String name;
     int health;
+
+    public void setGridPaneAssigned(GridPane gridPaneAssigned) {
+        this.gridPaneAssigned = gridPaneAssigned;
+    }
+
     GridPane gridPaneAssigned = new GridPane();
     Boolean isDestroyed = false;
     HashMap<Integer, Integer> shipLocation = new HashMap<>();

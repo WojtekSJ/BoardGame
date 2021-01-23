@@ -25,4 +25,7 @@ public class PotentialPlayerShipLocationList implements Serializable {
     public void remove(Integer toRemove){
         playerPotentialShipLocation.remove(toRemove);
     }
+    public void clear(){
+        playerPotentialShipLocation.clear();
+    }
 }
