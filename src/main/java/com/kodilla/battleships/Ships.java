@@ -17,8 +17,6 @@ public class Ships implements Serializable {
         oos.writeObject(playerPotentialShipLocation);
     }
     private void readObject(ObjectInputStream oos) throws IOException {
-        //Class<?> declaringClass = (Class<?>)in.readObject();
-        System.out.println("Odczytywanie ships");
         try
         {
             this.name = (String)oos.readObject();
@@ -30,17 +28,15 @@ public class Ships implements Serializable {
         }
         catch (Exception e)
         {
-            throw new IOException(String.format("Error occurred resolving deserialized method '%s.%s'"));
+            throw new IOException("Error occurred resolving deserialized method '%s.%s'");
         }
     }
     String name;
     int health;
 
-    public void setGridPaneAssigned(GridPane gridPaneAssigned) {
-        this.gridPaneAssigned = gridPaneAssigned;
-    }
 
-    GridPane gridPaneAssigned = new GridPane();
+
+    GridPane gridPaneAssigned;
     Boolean isDestroyed = false;
     HashMap<Integer, Integer> shipLocation = new HashMap<>();
     PotentialPlayerShipLocationList playerPotentialShipLocation;
@@ -52,9 +48,7 @@ public class Ships implements Serializable {
         for(Integer tempLocation: locations){
             shipLocation.put(tempLocation, 1);
         }
-
     }
-
     public Ships(int platowiec, Set<Integer> locations, GridPane gridPaneAssigned, PotentialPlayerShipLocationList playerPotentialShipLocation){
         this.name = platowiec+"";
         health = platowiec;
@@ -63,36 +57,24 @@ public class Ships implements Serializable {
         for(Integer tempLocation: locations){
             shipLocation.put(tempLocation, 1);
         }
-
     }
-
-    public Boolean getDestroyed() {
-        return isDestroyed;
+    public void setGridPaneAssigned(GridPane gridPaneAssigned) {
+        this.gridPaneAssigned = gridPaneAssigned;
     }
-
-    public void getHit(int location) {
-
-    }
-
     public void checkStatus() {
         int status = 0;
         for(Map.Entry<Integer, Integer> entry: shipLocation.entrySet()){
-           // System.out.println("Platowiec: " + name +" Lokalizacja: " + entry.getKey() + "Ma status: " + entry.getValue());
                 if(entry.getValue()>0){
                    status++;
                 }
         }
       if(status==0){
-          GameButton toChangeButton = new GameButton();
+          GameButton toChangeButton;
           VerifyNeighbors verificator = new VerifyNeighbors();
           List<Integer> shipNumbersLocation = new ArrayList<>();
-          Set<Integer> shipNeighborsLocation = new HashSet<>();
-
-
           for(Map.Entry<Integer, Integer> entry: shipLocation.entrySet()){
               shipNumbersLocation.add(entry.getKey());
           }
-
           for(Integer positionToColor: shipNumbersLocation) {
               try {
                   toChangeButton = verificator.getNodeByRowColumnIndex(verificator.getRowLocation(positionToColor), verificator.getColumnLocation(positionToColor), gridPaneAssigned);
@@ -101,45 +83,28 @@ public class Ships implements Serializable {
                   System.out.println("There is no ship to deploy");
               }
           }
-          Set<Integer> listOfNeighborCells = new HashSet<>();
+          Set<Integer> listOfNeighborCells;
           listOfNeighborCells = verificator.getListOfNeighbors(shipNumbersLocation);
-          //System.out.println("Petla do kolorowania i usuwania pozycji dla sasiadow: " + listOfNeighborCells);
           for(Integer positionToColor: listOfNeighborCells) {
-              //System.out.println(positionToColor);
               try {
                   toChangeButton = verificator.getNodeByRowColumnIndex(verificator.getRowLocation(positionToColor), verificator.getColumnLocation(positionToColor), gridPaneAssigned);
                   toChangeButton.setStyle("-fx-background-color: #000000;");
                   toChangeButton.setDisable(true);
-
-                  //System.out.println("Rozmiar listy potencjalnych celow: " + playerPotentialShipLocation.getPlayerPotentialShipLocation().size());
-                  //System.out.println("Tablica ma pozycje: " + playerPotentialShipLocation.getPlayerPotentialShipLocation());
-                  //System.out.println("Do usuniecia: " + listOfNeighborCells);
                   if (playerPotentialShipLocation.getPlayerPotentialShipLocation().size()>0){
                       playerPotentialShipLocation.removeSetFromPosition(listOfNeighborCells);
-                      //System.out.println("Usuwam: ");
-                      //System.out.println("Rozmiar listy po usunieciu: " + playerPotentialShipLocation.getPlayerPotentialShipLocation().size());
-                      //System.out.println("Tablica po usunieciu ma pozycje: " + playerPotentialShipLocation.getPlayerPotentialShipLocation());
                   }
 
               } catch (Exception e) {
-                  //System.out.println(e.getMessage());
                   System.out.println("There is no ship to deploy");
               }
           }
-          //shipNeighborsLocation
-          //validator.
-
-
           isDestroyed = true;
           System.out.println("Statek " + name + " zniszczony");
-          //comunicator.
-
       }
     }
     public boolean checkIfHit(Integer location, GameButton gameButton){
         for(Map.Entry<Integer, Integer> entry: shipLocation.entrySet()){
-            if(entry.getKey()==location){
-
+            if(entry.getKey().equals(location)){
                 shipLocation.replace(entry.getKey(), 0);
                 health--;
                 gameButton.setStyle("-fx-background-color: #FFD700;");
@@ -148,7 +113,6 @@ public class Ships implements Serializable {
             }
         }
         gameButton.setStyle("-fx-background-color: #000000;");
-
         return false;
     }
 }

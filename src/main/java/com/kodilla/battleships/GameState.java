@@ -22,6 +22,8 @@ public class GameState implements Serializable {
     Set<Integer> listOfPlayerShipLocation;
     Set<Integer> listOfComputerShipLocation;
 
+
+
     boolean firstShoot = false;
     PotentialPlayerShipLocationList playerPotentialShipLocationClass;
     Set<Integer> targetLockedlist;
@@ -49,5 +51,73 @@ public class GameState implements Serializable {
         this.hitCellsList = hitCellsList;
         this.shipsBeforeShot = shipsBeforeShot;
         this.shipsAfterShot = shipsAfterShot;
+    }
+
+    public Fleet getComputerFleet() {
+        return computerFleet;
+    }
+
+    public Fleet getPlayerFleet() {
+        return playerFleet;
+    }
+
+    public HashSet<Integer> getComputerGridMiss() {
+        return computerGridMiss;
+    }
+
+    public HashSet<Integer> getComputerGridHit() {
+        return computerGridHit;
+    }
+
+    public HashSet<Integer> getComputerGridSink() {
+        return computerGridSink;
+    }
+
+    public HashSet<Integer> getPlayerGridMiss() {
+        return playerGridMiss;
+    }
+
+    public HashSet<Integer> getPlayerGridHit() {
+        return playerGridHit;
+    }
+
+    public HashSet<Integer> getPlayerGridSink() {
+        return playerGridSink;
+    }
+
+    public String getGameStage() {
+        return gameStage;
+    }
+
+    public Set<Integer> getListOfPlayerShipLocation() {
+        return listOfPlayerShipLocation;
+    }
+
+    public Set<Integer> getListOfComputerShipLocation() {
+        return listOfComputerShipLocation;
+    }
+
+    public boolean isFirstShoot() {
+        return firstShoot;
+    }
+
+    public PotentialPlayerShipLocationList getPlayerPotentialShipLocationClass() {
+        return playerPotentialShipLocationClass;
+    }
+
+    public Set<Integer> getTargetLockedlist() {
+        return targetLockedlist;
+    }
+
+    public Set<Integer> getHitCellsList() {
+        return hitCellsList;
+    }
+
+    public int getShipsBeforeShot() {
+        return shipsBeforeShot;
+    }
+
+    public int getShipsAfterShot() {
+        return shipsAfterShot;
     }
 }
