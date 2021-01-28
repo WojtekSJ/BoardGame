@@ -2,48 +2,33 @@ package com.kodilla.battleships;
 
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
-import javafx.scene.image.ImageView;
+
 import javafx.scene.layout.GridPane;
 
 import java.util.*;
 
 public class Deployment {
-
-    private Set<Integer> randomSetUpTempLocation = new HashSet<>();
     private List<Integer> randomSetUpListOfAllowedLocation = new ArrayList<>();
     private Set<Integer> potentialNextCellsForShip = new HashSet<>();
     private Set<Integer> computerTempShipLocation = new HashSet<>();
-
-
-    String name;
-    int shipSize;
-    int occupiedCells;
     boolean shipOnBoard = false;
-    List<Integer> cellsLocation = new ArrayList<>();
-    GameButton temp = new GameButton();
-
-    public boolean checkIfShipOnBoard(){
-        if(occupiedCells==shipSize){
-            shipOnBoard = true;
-            return true;
-        }
-        return false;
-    }
 
     public void createListOfShipTODeploy(List<Integer> listOfShipToDeploy) {
         listOfShipToDeploy.add(5);
         listOfShipToDeploy.add(4);
+        //listOfShipToDeploy.add(3);
         listOfShipToDeploy.add(3);
         listOfShipToDeploy.add(2);
+        //listOfShipToDeploy.add(2);
         listOfShipToDeploy.add(1);
-
+        //listOfShipToDeploy.add(1);
     }
     public void randomComputerDeployment(Set<Integer> listOfComputerShipLocation, GridPane computerGridBoard,
                                          Fleet computerFleet, int fiveCells, int fourCells, int threeCells,
                                          int twoCells, int oneCells) {
         List<Integer> numberOfShips = new ArrayList<>();
+        VerifyNeighbors validator = new VerifyNeighbors();
         Integer nextCell = -1;
-
         for(int i=0;i<fiveCells;i++){
             numberOfShips.add(5);
         }
@@ -59,10 +44,7 @@ public class Deployment {
         for(int i=0;i<oneCells;i++){
             numberOfShips.add(1);
         }
-
-
         VerifyNeighbors verificator = new VerifyNeighbors();
-
         List<Integer> computerGridNumberList = new ArrayList<>();
         List<Integer> computerPotentialShipLocation = new ArrayList<>();
         List<Integer> cellsToRemove = new ArrayList<>();
@@ -70,84 +52,45 @@ public class Deployment {
         for (Integer i = 0; i < 100; i++) {
             computerGridNumberList.add(i);
         }
-
         computerPotentialShipLocation.addAll(computerGridNumberList);
-
         Integer randomShoot = -1;
         for(int i=0; i<numberOfShips.size(); i++) {
-
             shipOnBoard = false;
-            GameButton randomButton;
-
             Random rn = new Random();
-
-
             boolean shipPossibleToLocate = false;
-
             do{
-
-
-
-
                 computerTempShipLocation.clear();
                 do {
                     randomShoot = computerPotentialShipLocation.get(rn.nextInt(computerPotentialShipLocation.size()));
-
                 } while (verificator.checkIfAnyNeighbors(randomShoot, computerGridBoard, listOfComputerShipLocation));
-
                 computerTempShipLocation.add(randomShoot);
-
-
-
                 if (computerTempShipLocation.size() == numberOfShips.get(i)){
                     listOfComputerShipLocation.addAll(computerTempShipLocation);
                     computerFleet.addToFleet(new Ships(numberOfShips.get(i), computerTempShipLocation, computerGridBoard));
                     shipOnBoard = true;
                     shipPossibleToLocate = true;
                     computerPotentialShipLocation.removeAll(computerTempShipLocation);
-                    try {
-                        randomButton = getNodeByRowColumnIndex(verificator.getRowLocation(randomShoot), verificator.getColumnLocation(randomShoot), computerGridBoard);
-                        //randomButton.setStyle("-fx-background-color: #FFD700;");
-                    }catch (Exception e) {
-                        System.out.println("There is no ship to deploy");
-                    }
                     potentialNextCellsForShip.clear();
-
                 }
                 else {
                     do {
-
                         verificator.createAllowedCellList(computerTempShipLocation, potentialNextCellsForShip);
                         potentialNextCellsForShip.removeAll(computerTempShipLocation);
-
                         if(potentialNextCellsForShip.size()!=0) {
                             for (Integer temp : potentialNextCellsForShip) {
                                 if (verificator.checkIfAnyNeighbors(temp, computerGridBoard, listOfComputerShipLocation)) {
                                     cellsToRemove.add(temp);
-
                                 }
                             }
                             potentialNextCellsForShip.removeAll(cellsToRemove);
                             cellsToRemove.clear();
-
                         }
                         randomSetUpListOfAllowedLocation.addAll(potentialNextCellsForShip);
-
                         nextCell = randomSetUpListOfAllowedLocation.get(rn.nextInt(randomSetUpListOfAllowedLocation.size()));
                         computerTempShipLocation.add(nextCell);
                         if (computerTempShipLocation.size() == numberOfShips.get(i)) {
                             listOfComputerShipLocation.addAll(computerTempShipLocation);
                             computerFleet.addToFleet(new Ships(numberOfShips.get(i), computerTempShipLocation, computerGridBoard));
-
-                            for(Integer positionToColor: computerTempShipLocation) {
-                                try {
-                                    randomButton = getNodeByRowColumnIndex(verificator.getRowLocation(positionToColor), verificator.getColumnLocation(positionToColor), computerGridBoard);
-                                    //randomButton.setStyle("-fx-background-color: #FFD700;");
-                                } catch (Exception e) {
-                                    System.out.println("There is no ship to deploy");
-                                }
-                            }
-
                             shipOnBoard = true;
                             shipPossibleToLocate = true;
                             computerPotentialShipLocation.removeAll(computerTempShipLocation);
@@ -159,19 +102,11 @@ public class Deployment {
                         }
                     }while (potentialNextCellsForShip.size()!=0&&!shipOnBoard);
                 }
-
             }while(!shipPossibleToLocate);
-
-
-
-        }
-        for(Ships tempShip: computerFleet.fleetList) {
-            //System.out.println("Statek na koordynatach: " + tempShip.shipLocation);
         }
         }
 
-    public void computerDeployment(Set<Integer> listOfComputerShipLocation, GridPane computerGridBoard, Fleet computerFleet)   {
-
+    /*public void computerDeployment(Set<Integer> listOfComputerShipLocation, GridPane computerGridBoard, Fleet computerFleet)   {
         Set<Integer> tempLocation = new HashSet<>();
         tempLocation.add(0);
         tempLocation.add(10);
@@ -257,34 +192,18 @@ public class Deployment {
         computerFleet.addToFleet(trzyplat);
         computerFleet.addToFleet(dwuplat);
         computerFleet.addToFleet(jednoplat);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    }
-    public GameButton getNodeByRowColumnIndex (final int row, final int column, GridPane gridPane) {
+    }*/
+/*    public GameButton getNodeByRowColumnIndex (final int row, final int column, GridPane gridPane) {
         GameButton result = null;
         ObservableList<Node> childrens = gridPane.getChildren();
-
         for (Node node : childrens) {
             if(gridPane.getRowIndex(node) == row && gridPane.getColumnIndex(node) == column) {
                 result = (GameButton)node;
                 break;
             }
         }
-
         return result;
-    }
+    }*/
 }
 
 
